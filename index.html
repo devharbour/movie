@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Gallery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .movie-card {
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .category-buttons button {
+            margin: 0 10px;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        /* Center movie cards within the grid */
+        .movie-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie-card {
+            flex: 1 0 21%; /* Adjust to 21% for a nice responsive layout */
+            max-width: 21%;
+        }
+
+        /* Make sure the layout is responsive on mobile */
+        @media (max-width: 768px) {
+            .movie-card {
+                flex: 1 0 46%; /* 2 cards per row on medium screens */
+                max-width: 46%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-card {
+                flex: 1 0 100%; /* 1 card per row on small screens */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Movie Gallery</a>
+    </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="search-bar">
+    <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Search movies by title...">
+</div>
+
+<!-- Category Filter -->
+<div class="category-buttons">
+    <button class="btn btn-primary" id="all">All</button>
+    <button class="btn btn-secondary" id="action">Action</button>
+    <button class="btn btn-secondary" id="thriller">Thriller</button>
+    <button class="btn btn-secondary" id="police">Police</button>
+    <button class="btn btn-secondary" id="drama">Drama</button>
+    <button class="btn btn-secondary" id="albanian">Albanian</button>
+    <button class="btn btn-secondary" id="documentaries">Documentaries</button>
+    <button class="btn btn-secondary" id="seriale">Seriale</button>
+</div>
+
+<!-- Movie Grid -->
+<div class="container">
+    <div class="movie-grid" id="movie-grid">
+        <!-- Movie items will be injected here by JavaScript -->
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Movie data (example)
+    const movies = [
+        { title: "Northman a Viking Saga", category: "Action", cover: "Northman.jpg", video: "nvs.mp4" },
+        { title: "AKA English", category: "Action", cover: "AKA.jpg", video: "AKA.mp4" },
+        { title: "Blood & Gold", category: "Thriller", cover: "Blood.jpg", video: "Blood&Gold.mp4" },
+        { title: "Child44", category: "Police", cover: "Child.jpg", video: "Child44.mp4" },
+        { title: "The Last of the Mohicans", category: "Drama", cover: "last.jpg", video: "Thelastofthemohicans.mkv" },
+        { title: "Njerez dhe Fate Ep 1 - 10", category: "Albanian", cover: "Njerez.jpg", video: "NF2.mp4" },
+        { title: "Njerez dhe Fate 11 - 20", category: "Albanian", cover: "Njerez.jpg", video: "NF1.mp4" },
+        { title: "Guxim", category: "Albanian", cover: "guxim.jpg", video: "Guxim.mp4" },
+        { title: "Masakra e Tivarit", category: "Documentaries", cover: "Dokumentar.jpg", video: "Masakra e Tivarit.mp4" },
+        // Add more movies as needed
+        { title: "Si u tradhetua Skenderbeu", category: "Documentaries", cover: "Gjurme.jpg", video: "Skenderbeu.mp4" },
+        { title: "Alexander the Making of a God", category: "Seriale", cover: "alex.jpg", video: "alexander.html" },
+         { title: "Apocalypto 2006", category: "Action", cover: "Apocalypto.jpg", video: "https://mega.nz/file/0iFBmD7K#CD9o7O6CUiQwmiOEtaqKS1SU887vExwxas9EIQE9bFM" },
+    ];
+
+    // Function to display all movies
+    function displayMovies(filteredMovies) {
+        const movieGrid = $('#movie-grid');
+        movieGrid.empty();  // Clear current movie grid
+
+        filteredMovies.forEach(movie => {
+            const movieCard = `
+                <div class="movie-card ${movie.category}">
+                    <div class="card">
+                        <img src="${movie.cover}" alt="${movie.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${movie.title}</h5>
+                            <a href="${movie.video}" class="btn btn-primary" target="_blank">Watch Movie</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            movieGrid.append(movieCard);
+        });
+    }
+
+    // Filter movies based on category
+    $('#all').click(function() {
+        displayMovies(movies);
+    });
+    
+    $('#action').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Action"));
+    });
+
+    $('#thriller').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Thriller"));
+    });
+
+    $('#police').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Police"));
+    });
+
+    $('#drama').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Drama"));
+    });
+
+    $('#albanian').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Albanian"));
+    });
+
+    $('#documentaries').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Documentaries"));
+    });
+
+    $('#seriale').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Seriale"));
+    });
+
+    // Search functionality
+    $('#search').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(query));
+        displayMovies(filteredMovies);
+    });
+
+    // Initial display of all movies
+    displayMovies(movies);
+</script>
+</body>
+</html>
