@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Gallery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .movie-card {
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .category-buttons button {
+            margin: 0 10px;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        /* Center movie cards within the grid */
+        .movie-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie-card {
+            flex: 1 0 21%; /* Adjust to 21% for a nice responsive layout */
+            max-width: 21%;
+        }
+
+        /* Make sure the layout is responsive on mobile */
+        @media (max-width: 768px) {
+            .movie-card {
+                flex: 1 0 46%; /* 2 cards per row on medium screens */
+                max-width: 46%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-card {
+                flex: 1 0 100%; /* 1 card per row on small screens */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Movie Gallery</a>
+    </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="search-bar">
+    <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Search movies by title...">
+</div>
+
+<!-- Category Filter -->
+<div class="category-buttons">
+    <button class="btn btn-primary" id="all">All</button>
+    <button class="btn btn-secondary" id="action">Action</button>
+    <button class="btn btn-secondary" id="thriller">Thriller</button>
+    <button class="btn btn-secondary" id="police">Police</button>
+    <button class="btn btn-secondary" id="drama">Drama</button>
+    <button class="btn btn-secondary" id="albanian">Albanian</button>
+    <button class="btn btn-secondary" id="documentaries">Documentaries</button>
+    <button class="btn btn-secondary" id="seriale">Seriale</button>
+</div>
+
+<!-- Movie Grid -->
+<div class="container">
+    <div class="movie-grid" id="movie-grid">
+        <!-- Movie items will be injected here by JavaScript -->
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Movie data (example)
+    const movies = [
+             { title: "Katrori Pushtetit E01", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/tvcwzYrA#sueFZxYjvRySLZ0yVfN7LK4CzxyHrzzsXOJlFRwINzU" },
+             { title: "Katrori Pushtetit E02", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/5iljBDDC#0vxOG-6nVrX-7fX_35MViw8H4OzFw4QaHRZv0xBh7Z8" },
+             { title: "Katrori Pushtetit E03", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/dncGySDT#NmmKdhudbTERSBW1qGVqYG26iK68thJsfGjjXNFTWb0" },
+             { title: "Katrori Pushtetit E04", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/Fu8VXKqB#nBKt6DUR2LvtSHL2wUVhzVzJFoOnNmlPAdIsLyEiH8A" },
+             { title: "Katrori Pushtetit E05", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/t7lyVKCB#tWSb8Y25sN1KnFwexVdJmhdWSczlbC3kkwvaXX2tTaU" },
+             { title: "Katrori Pushtetit E06", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/kmUjFaKD#U_P42413qVySW2hy5Uz5sEIK_TioMOzWcZujLLR5lts" },
+             { title: "Katrori Pushtetit E07", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/5n9mkZjC#r5fxhoIAnKRCcBPI18GvTjtv-RF3UutlmD24HG96KOA" },
+             { title: "Katrori Pushtetit E08", category: "Albanian", cover: "katrori.jpg", video: "https://mega.nz/file/QvU3UQQS#iFoeXzqTG-Mmn3ZDTgafIggx_6wNbaHKEYRvRjG2Xis" },
+    ];
+
+    // Function to display all movies
+    function displayMovies(filteredMovies) {
+        const movieGrid = $('#movie-grid');
+        movieGrid.empty();  // Clear current movie grid
+
+        filteredMovies.forEach(movie => {
+            const movieCard = `
+                <div class="movie-card ${movie.category}">
+                    <div class="card">
+                        <img src="${movie.cover}" alt="${movie.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${movie.title}</h5>
+                            <a href="${movie.video}" class="btn btn-primary" target="_blank">Watch Movie</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            movieGrid.append(movieCard);
+        });
+    }
+
+    // Filter movies based on category
+    $('#all').click(function() {
+        displayMovies(movies);
+    });
+    
+    $('#action').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Action"));
+    });
+
+    $('#thriller').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Thriller"));
+    });
+
+    $('#police').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Police"));
+    });
+
+    $('#drama').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Drama"));
+    });
+
+    $('#albanian').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Albanian"));
+    });
+
+    $('#documentaries').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Documentaries"));
+    });
+
+    $('#seriale').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Seriale"));
+    });
+
+    // Search functionality
+    $('#search').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(query));
+        displayMovies(filteredMovies);
+    });
+
+    // Initial display of all movies
+    displayMovies(movies);
+</script>
+</body>
+</html>
