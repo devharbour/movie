@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Gallery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .movie-card {
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .category-buttons button {
+            margin: 0 10px;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        /* Center movie cards within the grid */
+        .movie-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie-card {
+            flex: 1 0 21%; /* Adjust to 21% for a nice responsive layout */
+            max-width: 21%;
+        }
+
+        /* Make sure the layout is responsive on mobile */
+        @media (max-width: 768px) {
+            .movie-card {
+                flex: 1 0 46%; /* 2 cards per row on medium screens */
+                max-width: 46%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-card {
+                flex: 1 0 100%; /* 1 card per row on small screens */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Movie Gallery</a>
+    </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="search-bar">
+    <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Search movies by title...">
+</div>
+
+<!-- Category Filter -->
+<div class="category-buttons">
+    <button class="btn btn-primary" id="all">All</button>
+    <button class="btn btn-secondary" id="action">Action</button>
+    <button class="btn btn-secondary" id="thriller">Thriller</button>
+    <button class="btn btn-secondary" id="police">Police</button>
+    <button class="btn btn-secondary" id="drama">Drama</button>
+    <button class="btn btn-secondary" id="albanian">Albanian</button>
+    <button class="btn btn-secondary" id="documentaries">Documentaries</button>
+    <button class="btn btn-secondary" id="seriale">Seriale</button>
+</div>
+
+<!-- Movie Grid -->
+<div class="container">
+    <div class="movie-grid" id="movie-grid">
+        <!-- Movie items will be injected here by JavaScript -->
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Movie data (example)
+    const movies = [
+        { title: "Njerez dh Fate S1E1", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/fwxG3KAD#CJQMBQQpEUiiQitI3ANYs_veY21aaTjLAsdfFqRfMGk" },
+         { title: "Njerez dh Fate S1E2", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/L0YChCyL#093HLefe8Dy11pJ-9RhqQRbwuEgcp8ARxiI0rZGBmBI" },
+          { title: "Njerez dh Fate S1E3", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/Tl4U0KQJ#VYnGti372Cx_3SZlfWpLg9jRFOQ8IWNtdExAZHghXyk" },
+           { title: "Njerez dh Fate S1E4", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/GtAGXRQA#-I7sdMiaLugijA6Oz9vuL6Gin5uI3TZId4tqdwX_3KI" },
+            { title: "Njerez dh Fate S1E5", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/H55ySDLY#T32YX0-cjyJ13ue7WPhTQpHzDyAd1TwBt8m8Ajf09Os" },
+             { title: "Njerez dh Fate S1E6", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/T8Q3yLaS#97kYSTNbFCkwwoDpmbfE5-QBITnLKgty5ehGAcElNP0" },
+              { title: "Njerez dh Fate S1E7", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/XpIFTD4B#6UKmdaHoWB6u_W5_2XBfgdJGTb9aDds9MLizumKzJQ0" },
+               { title: "Njerez dh Fate S1E8", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/K0Yl0bgK#A_UARcl2X88DEb5hyXkUvhO6Btpn-YLlaePqFmLx8LA" },
+                { title: "Njerez dh Fate S1E9", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/ToxQUSZb#2F5uapq_kEHT_v85TJMbWV-4z7yMAyR1hx3i_qEuy3M" },
+                 { title: "Njerez dh Fate S1E10", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/zhQSmQ4Y#0ag2vl2t4REHcu66ofXlgGH78oLmTvvLfAlYaTjF6UE" },
+                 { title: "Njerez dh Fate S1E11", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/nw4giLpB#vjsN-h6MaW2p1SZXWa_-K2_Zxpi5KAu4CfaDNF-AeOY" },
+                 { title: "Njerez dh Fate S1E12", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/TxZUmYYS#dz8C5qoZOGiXk60oUacY0YusZvMJGA8aj4npz617wiQ" },
+                 { title: "Njerez dh Fate S1E13", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/ftB2kIhA#ZJz7JUaxmFhOPZ7-rpozWg2grVdTRrNri-Ov_4ISYA4" },
+                 { title: "Njerez dh Fate S1E14", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/C0xiDL5A#2VAZU4Dwo2IUL7NM5EvNEHis7IoUY6CzX3K7NQoFc0U" },
+                 { title: "Njerez dh Fate S1E15", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/e9pS0bBQ#HquGjuvd1Ljik2bYE8AiPW1yZUmVZmHfsDPMUKtwPbY" },
+                 { title: "Njerez dh Fate S1E16", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/6opW0CoD#9JLgMuILdLTnfJ0bISYQhtxAC1qxl3w2R69FF2GgPfE" },
+                 { title: "Njerez dh Fate S1E17", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/q0xiSYgB#PijsqIatEfJxH-m471R5rI_uGiI5SfBxsTZd5DuEhVc" },
+                 { title: "Njerez dh Fate S1E18", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/zh5zgK5Y#parrLwtcZ7L6_0vz7-h8-WgVVHraofAJQqRQqmhw0w0" },
+                 { title: "Njerez dh Fate S1E19", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/G4glTAZB#CmVUlppCa-ryMs6P6wikman77-zywl3l0AscMCXpVKY" },
+                 { title: "Njerez dh Fate S1E20", category: "seriale", cover: "njerez.jpg", video: "https://mega.nz/file/Dhwx2aqa#YQXMMqq0761u-ZIWWfgbRXDtgE3fqt1evOxx2PIRDH4" },
+        
+    ];
+
+    // Function to display all movies
+    function displayMovies(filteredMovies) {
+        const movieGrid = $('#movie-grid');
+        movieGrid.empty();  // Clear current movie grid
+
+        filteredMovies.forEach(movie => {
+            const movieCard = `
+                <div class="movie-card ${movie.category}">
+                    <div class="card">
+                        <img src="${movie.cover}" alt="${movie.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${movie.title}</h5>
+                            <a href="${movie.video}" class="btn btn-primary" target="_blank">Watch Movie</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            movieGrid.append(movieCard);
+        });
+    }
+
+    // Filter movies based on category
+    $('#all').click(function() {
+        displayMovies(movies);
+    });
+    
+    $('#action').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Action"));
+    });
+
+    $('#thriller').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Thriller"));
+    });
+
+    $('#police').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Police"));
+    });
+
+    $('#drama').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Drama"));
+    });
+
+    $('#albanian').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Albanian"));
+    });
+
+    $('#documentaries').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Documentaries"));
+    });
+
+    $('#seriale').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Seriale"));
+    });
+
+    // Search functionality
+    $('#search').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(query));
+        displayMovies(filteredMovies);
+    });
+
+    // Initial display of all movies
+    displayMovies(movies);
+</script>
+</body>
+</html>
