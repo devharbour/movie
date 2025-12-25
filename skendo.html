@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Gallery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .movie-card {
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .category-buttons button {
+            margin: 0 10px;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        /* Center movie cards within the grid */
+        .movie-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie-card {
+            flex: 1 0 21%; /* Adjust to 21% for a nice responsive layout */
+            max-width: 21%;
+        }
+
+        /* Make sure the layout is responsive on mobile */
+        @media (max-width: 768px) {
+            .movie-card {
+                flex: 1 0 46%; /* 2 cards per row on medium screens */
+                max-width: 46%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-card {
+                flex: 1 0 100%; /* 1 card per row on small screens */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Movie Gallery</a>
+    </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="search-bar">
+    <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Search movies by title...">
+</div>
+
+<!-- Category Filter -->
+<div class="category-buttons">
+    <button class="btn btn-primary" id="all">All</button>
+    <button class="btn btn-secondary" id="action">Action</button>
+    <button class="btn btn-secondary" id="thriller">Thriller</button>
+    <button class="btn btn-secondary" id="police">Police</button>
+    <button class="btn btn-secondary" id="drama">Drama</button>
+    <button class="btn btn-secondary" id="albanian">Albanian</button>
+    <button class="btn btn-secondary" id="documentaries">Documentaries</button>
+    <button class="btn btn-secondary" id="seriale">Seriale</button>
+</div>
+
+<!-- Movie Grid -->
+<div class="container">
+    <div class="movie-grid" id="movie-grid">
+        <!-- Movie items will be injected here by JavaScript -->
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Movie data (example)
+    const movies = [
+      {title: "Skanderbeg Komedi E1", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/07lzmYzC#qGchsOgmNZ344QZf6Q19_mvrY0Iry52rgZk4vFZGPxE" },
+        {title: "Skanderbeg Komedi E2", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/Yj0zkSrS#g9KnuDsQXFza0OVGAOLspsVO0C2mRKSj4ZrhE6H4wsI" },
+        {title: "Skanderbeg Komedi E3", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/JjlVmJSb#ariLU5rls4OUuHzbi6SurpZGbyIyrBKdPjPN9Lk2VwA" },
+        {title: "Skanderbeg Komedi E4", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/4z8EUZLJ#9DwdyAK_61WeT9zHQndGR4eZvFPA0tVlOekCLBrVia8" },
+        {title: "Skanderbeg Komedi E6", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/ZqshFZxS#k19l3jVTyTrV5HLfFXiAxb0ZZcooVvRW8dGuzNUFrb0" },
+        {title: "Skanderbeg Komedi E5", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/1zVDTYga#wwvJzSLYtG9VPj6JVkm0lH1yM5akaLqDK8u6hJO1umE" },
+        {title: "Skanderbeg Komedi E7", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/cmlEHYKY#wprHyhgt_g3EQowEO7PCtWa8CTV3XWQQmMAKIVgwyVU" },
+        {title: "Skanderbeg Komedi E8", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/ZvsRlRaD#otpqjDlV_b5RXo6KgARy71isFmxfkeMvOmTSP1gEdec" },
+        {title: "Skanderbeg Komedi E9", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/s60wRZbZ#amtNd7rXOB1JnxWvOxikJe_TbNiHfE1Nr6MyIwqP5hk" },
+        {title: "Skanderbeg Komedi E10", category: "Seriale", cover: "skendo.jpg", video:"https://mega.nz/file/smsDVTKA#4BB9TOLzfhJDJTkiVFE5BEowAHu6Nh2qvx7rjKY5E-0" },
+    ];
+
+    // Function to display all movies
+    function displayMovies(filteredMovies) {
+        const movieGrid = $('#movie-grid');
+        movieGrid.empty();  // Clear current movie grid
+
+        filteredMovies.forEach(movie => {
+            const movieCard = `
+                <div class="movie-card ${movie.category}">
+                    <div class="card">
+                        <img src="${movie.cover}" alt="${movie.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${movie.title}</h5>
+                            <a href="${movie.video}" class="btn btn-primary" target="_blank">Watch Movie</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            movieGrid.append(movieCard);
+        });
+    }
+
+    // Filter movies based on category
+    $('#all').click(function() {
+        displayMovies(movies);
+    });
+    
+    $('#action').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Action"));
+    });
+
+    $('#thriller').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Thriller"));
+    });
+
+    $('#police').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Police"));
+    });
+
+    $('#drama').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Drama"));
+    });
+
+    $('#albanian').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Albanian"));
+    });
+
+    $('#documentaries').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Documentaries"));
+    });
+
+    $('#seriale').click(function() {
+        displayMovies(movies.filter(movie => movie.category === "Seriale"));
+    });
+
+    // Search functionality
+    $('#search').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(query));
+        displayMovies(filteredMovies);
+    });
+
+    // Initial display of all movies
+    displayMovies(movies);
+</script>
+</body>
+</html>
